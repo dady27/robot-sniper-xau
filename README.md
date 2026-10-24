@@ -35,7 +35,9 @@ sniper/
   sizing.py      mise optimale vers un objectif (programmation dynamique)
   synthetic.py   marché aléatoire de contrôle
   events.py      étude d'événements (sweep de l'Asie, confirmation, contrôle neutre)
+  traversee.py   traversée des niveaux de stops (multiples de 50 $, veille, semaine)
 scripts/         téléchargement, backtest, contrôle sur hasard, calcul de mise, études
+recherche/       tests des règles tirées des documents de trading (Sir Jones, BFX, SMV)
 tests/           tests sur bougies construites à la main
 ```
 
@@ -86,6 +88,15 @@ python scripts/entonnoir.py --m1-dir data/m1 --start 2015-02-01 --end 2024-01-01
 ```bash
 python scripts/etude_asie.py --m1-dir data/m1 --start 2015-02-01 --end 2024-01-01 --confirmation cisd
 ```
+
+Traversée des niveaux de stops : au premier contact du jour d'un multiple de 50 $, du plus haut ou du plus bas de la veille ou de la semaine passée, ordre stop dans le sens de la traversée, stop 0,5 ATR H1, sortie à 16h New York. Mesuré à 2,5R : +0,16R par trade sur 2015-2023 (2 118 trades, t 4,5), +0,09R sur 2024-2026 (1 020 trades, t 1,9), +0,02R avec 0,05 ATR H1 de glissement. Les niveaux non ronds (`--decalage 16.67`) perdent le spread.
+
+```bash
+python scripts/etude_traversee.py --m1-dir data/m1 --start 2015-02-01 --end 2024-01-01
+python scripts/etude_traversee.py --m1-dir data/m1 --start 2024-01-01 --glissement-atr-h1 0.05
+```
+
+Les règles des documents de trading (M/W de Sir Jones, retracement 62 % de BFX, equal highs, cycle de 3 jours...) sont testées dans `recherche/documents/` : aucune ne bat le hasard.
 
 Mise du prochain trade (exemple : 10 $, 44 trades restants, 50 % de TP) :
 
