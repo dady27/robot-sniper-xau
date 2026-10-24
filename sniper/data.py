@@ -101,6 +101,29 @@ def load_mt5_bars(path: Path, server_utc_offset_hours: float = 0.0, point: float
     return out.sort_index()
 
 
+# Spread Dukascopy de l'or mesuré en 2020 et en 2025-2026 : 1,5 à 2,0 points de base du prix selon le mois.
+HISTDATA_SPREAD_BP = 1.7
+
+
+def load_histdata(path: Path, spread_bp: float = HISTDATA_SPREAD_BP) -> pd.DataFrame:
+    """Lit un fichier M1 HistData au format MetaTrader (DAT_MT_XAUUSD_M1_*.csv, sans en-tête).
+
+    Les prix sont les prix bid de Dukascopy, identiques à la minute près. L'heure est celle de
+    New York, changement d'heure compris. HistData ne donne pas le spread : il est estimé à
+    `spread_bp` points de base du prix de clôture.
+    """
+    df = pd.read_csv(path, header=None, names=["date", "time", "open", "high", "low", "close", "volume"])
+    ts = pd.DatetimeIndex(pd.to_datetime(df["date"] + " " + df["time"], format="%Y.%m.%d %H:%M"))
+    # L'heure répétée ou sautée du changement d'heure est retirée plutôt que devinée.
+    ts = ts.tz_localize("America/New_York", ambiguous="NaT", nonexistent="NaT")
+    out = df[["open", "high", "low", "close"]].astype(float)
+    out["spread"] = spread_bp * 1e-4 * out["close"]
+    out["ticks"] = np.nan
+    out.index = ts.tz_convert("UTC")
+    out = out[out.index.notna()]
+    return out[~out.index.duplicated()].sort_index()
+
+
 def resample(m1: pd.DataFrame, rule: str) -> pd.DataFrame:
     """Bougies d'unité supérieure, indexées par l'heure d'ouverture."""
     agg = m1.resample(rule, label="left", closed="left").agg(

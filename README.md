@@ -34,7 +34,8 @@ sniper/
   report.py      synthèse par modèle, intervalle de confiance de Wilson
   sizing.py      mise optimale vers un objectif (programmation dynamique)
   synthetic.py   marché aléatoire de contrôle
-scripts/         téléchargement, backtest, contrôle sur hasard, calcul de mise
+  events.py      étude d'événements (sweep de l'Asie, confirmation, contrôle neutre)
+scripts/         téléchargement, backtest, contrôle sur hasard, calcul de mise, études
 tests/           tests sur bougies construites à la main
 ```
 
@@ -45,11 +46,19 @@ pip install -r requirements.txt
 python -m pytest -q
 ```
 
-Données Dukascopy (2015 à aujourd'hui, environ 12 ans de ticks) :
+Données HistData (2015 à aujourd'hui en M1, quelques minutes de téléchargement) :
+
+```bash
+python scripts/download_histdata.py --start 2015 --end 2026-09
+python scripts/run_backtest.py --m1-dir data/m1
+```
+
+Les prix HistData sont les prix bid de Dukascopy, identiques à la minute près (vérifié sur 2025-2026). HistData ne donne pas le spread : il est estimé à 1,7 point de base du prix, la valeur mesurée sur Dukascopy (0,27 $ en 2020, 0,55 à 0,8 $ en 2025-2026).
+
+Ou les ticks Dukascopy, avec le spread réel. Le serveur limite fortement le débit (environ 15 s par fichier horaire, erreurs 503 au-delà d'une requête par seconde) : compter plusieurs jours pour 12 ans.
 
 ```bash
 python scripts/download_dukascopy.py --start 2015-01-01 --end 2026-10-01
-python scripts/run_backtest.py --m1-dir data/m1
 ```
 
 Ou un export MT5 d'Exness. Dans MetaTrader 5 : Affichage → Symboles → onglet Barres, choisir le symbole or du compte (souvent `XAUUSDm` sur un compte Standard), M1, la période la plus longue possible, Demander, puis Exporter les barres.
@@ -64,6 +73,18 @@ Contrôle anti-triche : sur une marche aléatoire, le taux de TP doit rester ver
 
 ```bash
 python scripts/controle_hasard.py --jours 1500
+```
+
+Entonnoir : à quelle règle chaque niveau candidat est éliminé.
+
+```bash
+python scripts/entonnoir.py --m1-dir data/m1 --start 2015-02-01 --end 2024-01-01
+```
+
+Étude du sweep de l'Asie : après le sweep du haut ou du bas asiatique et une confirmation, le mouvement qui suit est comparé au même trade pris dans les deux sens au même instant (contrôle neutre). Un écart nul veut dire que la confirmation n'apporte pas d'information sur le sens.
+
+```bash
+python scripts/etude_asie.py --m1-dir data/m1 --start 2015-02-01 --end 2024-01-01 --confirmation cisd
 ```
 
 Mise du prochain trade (exemple : 10 $, 44 trades restants, 50 % de TP) :
