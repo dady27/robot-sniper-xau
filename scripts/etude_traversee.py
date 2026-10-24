@@ -5,6 +5,7 @@ Exemples :
     python scripts/etude_traversee.py --m1-dir data/m1 --start 2024-01-01 --glissement-atr-h1 0.05
     python scripts/etude_traversee.py --m1-dir data/m1 --familles ronds --decalage 16.67   # niveaux non ronds
     python scripts/etude_traversee.py --m1-dir data/m1 --familles ronds --pas 100 --stop-atr-h1 1 --entree close
+    python scripts/etude_traversee.py --m1-dir data/usdjpy --pas 0.5 --stop-atr-h1 1 --entree close   # autre marché
 
 Sortie : out/traversee.csv (un trade par ligne) et la synthèse par cible, toutes familles
 puis par famille, avec l'écart au contrôle neutre et l'espérance par année.
@@ -41,7 +42,7 @@ def main() -> None:
     ap.add_argument("--start", type=date.fromisoformat)
     ap.add_argument("--end", type=date.fromisoformat)
     ap.add_argument("--familles", nargs="+", choices=FAMILIES, default=list(FAMILIES))
-    ap.add_argument("--pas", type=float, default=50.0, help="pas des chiffres ronds, en dollars")
+    ap.add_argument("--pas", type=float, default=50.0, help="pas des chiffres ronds, en unités de prix (50 $ sur l'or, 0.005 sur EUR/USD)")
     ap.add_argument("--decalage", type=float, default=0.0, help="décalage de la grille (contrôle)")
     ap.add_argument("--stop-atr-h1", type=float, default=0.5)
     ap.add_argument("--entree", choices=["stop", "close"], default="stop")

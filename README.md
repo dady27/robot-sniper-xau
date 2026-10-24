@@ -102,6 +102,14 @@ L'avantage vient surtout des multiples de 100 $. Sur ces niveaux, le prix contin
 python scripts/etude_traversee.py --m1-dir data/m1 --start 2024-01-01 --familles ronds --pas 100 --stop-atr-h1 1 --entree close
 ```
 
+Sur d'autres marchés, la même règle ne gagne pas après frais (`recherche/documents/h_trav_marches.py`). Sur USD/JPY, le prix continue bien dans le sens de la cassure des figures et demi-figures, et seulement sur ces niveaux (écart au contrôle +0,11R sur 2015-2023, t 5,6), mais le spread mange l'avantage : +0,04R par trade sur 2015-2023, -0,01R sur 2024-2026. L'argent, EUR/USD, GBP/USD, EUR/JPY, GBP/JPY et AUD/JPY perdent.
+
+```bash
+python scripts/download_histdata.py --pair USDJPY --start 2015 --end 2026-09 --spread-bp 1 --data data/usdjpy
+python scripts/etude_traversee.py --m1-dir data/usdjpy/m1 --start 2024-01-01 --pas 0.5 --stop-atr-h1 1 --entree close --out out/usdjpy
+python recherche/documents/h_trav_marches.py out/marches USDJPY=out/usdjpy/traversee.csv:1
+```
+
 Les règles des documents de trading (M/W de Sir Jones, retracement 62 % de BFX, equal highs, cycle de 3 jours...) sont testées dans `recherche/documents/` : aucune ne bat le hasard.
 
 Mise du prochain trade (exemple : 10 $, 44 trades restants, 50 % de TP) :

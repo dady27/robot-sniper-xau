@@ -11,6 +11,7 @@ python recherche/documents/h_btmm.py 2015-02-01 2024-01-01 out/btmm.csv
 LAB_M1=chemin/vers/m1 python recherche/documents/h_stats.py 2015-02-01 2024-01-01
 python recherche/documents/h_pips.py dossier/des/trades out/pips      # spread du fichier M1
 python recherche/documents/h_pips.py dossier/des/trades out/pips0 0   # spread fixe de 0 pip
+python recherche/documents/h_trav_marches.py out/marches USDJPY=out/usdjpy/traversee.csv:1 EURUSD=out/eurusd/traversee.csv:0.01
 ```
 
 | Script | Règle | Source | Résultat 2015-2023 |
@@ -23,6 +24,7 @@ python recherche/documents/h_pips.py dossier/des/trades out/pips0 0   # spread f
 | `h_trav_elan.py` | traversée : mouvement dans le sens de la cassure, de 1 minute à 6 heures après le contact | — | chiffres ronds : +0,15 ATR H1 à 15 min, +0,33 à 2 h (t 4,4) ; veille : élan fini après la minute du contact |
 | `h_trav_exits.py` | traversée : entrée stop ou au marché, 3 stops × 6 sorties au temps × 4 cibles | — | multiples de 100 $, marché, stop 1 ATR H1, cible 3R, 16h : +0,28R (t 3,1) ; 2024-2026 : +0,10R (t 1,2) |
 | `h_niveaux.py` | cassure du range asiatique, du range de Londres (02h-07h NY), de l'ouverture de New York (08h30-09h30) et de l'heure précédente, entrée au marché | — | pas d'élan après la minute du contact, sauf un peu à l'ouverture de New York (+0,06 ATR H1 à 1 h, t 2,0) ; net autour de 0R ou négatif |
+| `h_trav_marches.py` | traversée sur l'argent, EUR/USD, GBP/USD, USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY : figures, demi-figures, veille, semaine, entrée au marché, stop 1 ATR H1, cible 3R | — | élan net seulement sur USD/JPY (écart +0,11R, t 5,6), +0,04R après spread ; 2024-2026 : -0,01R ; tous les autres marchés perdent |
 | `h_pips.py` | « 20 à 30 pips presque sûrs » : les trades des scripts ci-dessus, cible et stop fixes en pips (1 pip = 0,10 $), jusqu'à 2026 | Dady | autant de gagnants qu'au hasard à chaque stop ; en 2024-2026, cible 20 et stop 200 : 86 % de gagnants (hasard 86 %), -7 pips par trade avec le spread |
 
 Seule la dernière ligne de `h_levels.py` donne un effet net, et il dit l'inverse du document :
