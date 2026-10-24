@@ -96,6 +96,12 @@ python scripts/etude_traversee.py --m1-dir data/m1 --start 2015-02-01 --end 2024
 python scripts/etude_traversee.py --m1-dir data/m1 --start 2024-01-01 --glissement-atr-h1 0.05
 ```
 
+L'avantage vient surtout des multiples de 100 $. Sur ces niveaux, le prix continue dans le sens de la cassure pendant 2 à 4 heures (`recherche/documents/h_trav_elan.py`), alors qu'au plus haut / bas de la veille l'élan s'arrête dans la minute du contact. Une entrée au marché à la clôture de cette minute suffit, avec un stop de 1 ATR H1, une cible de 3R et une sortie à 16h : +0,28R par trade sur 2015-2023 (376 trades, t 3,1), +0,10R sur 2024-2026 (339 trades, t 1,2). Le réglage a été choisi sur 2015-2023 (`recherche/documents/h_trav_exits.py`), puis testé une fois sur 2024-2026.
+
+```bash
+python scripts/etude_traversee.py --m1-dir data/m1 --start 2024-01-01 --familles ronds --pas 100 --stop-atr-h1 1 --entree close
+```
+
 Les règles des documents de trading (M/W de Sir Jones, retracement 62 % de BFX, equal highs, cycle de 3 jours...) sont testées dans `recherche/documents/` : aucune ne bat le hasard.
 
 Mise du prochain trade (exemple : 10 $, 44 trades restants, 50 % de TP) :

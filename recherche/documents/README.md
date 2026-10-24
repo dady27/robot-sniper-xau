@@ -20,6 +20,8 @@ python recherche/documents/h_pips.py dossier/des/trades out/pips0 0   # spread f
 | `h_stats.py` | Londres puis New York ; stop hunt = HOD/LOD ; cycle de 3 jours ; jour du plus haut / bas de la semaine | BFX, Sir Jones | corrélation +0,03 ; 25,5 % contre 24,1 % au hasard ; rien ; mardi-mercredi 27,2 % contre 27,9 % |
 | `h_levels.py` | equal highs / lows comme aimant ; chiffres ronds comme retournement | Sir Jones, SMV, BFX | 49,6 % contre 50 % ; au 1er contact d'un multiple de 50 $, retournement 42 % seulement |
 | `h_filters.py` | biais HTF et premium / discount sur les sweeps de l'Asie (`scripts/etude_asie.py`) | fiches SMV | au mieux +0,08R contre le hasard, espérance nette négative |
+| `h_trav_elan.py` | traversée : mouvement dans le sens de la cassure, de 1 minute à 6 heures après le contact | — | chiffres ronds : +0,15 ATR H1 à 15 min, +0,33 à 2 h (t 4,4) ; veille : élan fini après la minute du contact |
+| `h_trav_exits.py` | traversée : entrée stop ou au marché, 3 stops × 6 sorties au temps × 4 cibles | — | multiples de 100 $, marché, stop 1 ATR H1, cible 3R, 16h : +0,28R (t 3,1) ; 2024-2026 : +0,10R (t 1,2) |
 | `h_pips.py` | « 20 à 30 pips presque sûrs » : les trades des scripts ci-dessus, cible et stop fixes en pips (1 pip = 0,10 $), jusqu'à 2026 | Dady | autant de gagnants qu'au hasard à chaque stop ; en 2024-2026, cible 20 et stop 200 : 86 % de gagnants (hasard 86 %), -7 pips par trade avec le spread |
 
 Seule la dernière ligne de `h_levels.py` donne un effet net, et il dit l'inverse du document :

@@ -1,6 +1,8 @@
+import numpy as np
+
 from sniper.events import summarize_events
 from sniper.synthetic import random_walk_m1
-from sniper.traversee import run_cross
+from sniper.traversee import CrossParams, run_cross
 
 
 def test_no_edge_on_random_walk():
@@ -14,3 +16,14 @@ def test_no_edge_on_random_walk():
     assert s.loc["2.5", "taux_tp"] < 1 / 3.5 + 0.03
     assert ev["r2.5"].mean() < 0.1
     assert abs(s.loc["2.5", "t"]) < 2.5
+
+
+def test_step_100_market_entry():
+    # Multiples de 100 $ et entrée au marché : achat à l'ask, vente au bid, à la clôture de la minute du contact.
+    m1 = random_walk_m1("2025-01-06", 300, seed=1)
+    ev = run_cross(m1, CrossParams(families=("ronds",), step=100.0, stop_atr_h1=1.0, entry="close"))
+    assert len(ev) >= 30
+    assert (ev["level"] % 100 == 0).all()
+    bar = m1.loc[ev["time"]]
+    expected = np.where(ev["side"] == "long", bar["close"] + bar["spread"], bar["close"])
+    assert np.allclose(ev["entry"], expected)

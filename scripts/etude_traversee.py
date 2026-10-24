@@ -4,6 +4,7 @@ Exemples :
     python scripts/etude_traversee.py --m1-dir data/m1 --start 2015-02-01 --end 2024-01-01
     python scripts/etude_traversee.py --m1-dir data/m1 --start 2024-01-01 --glissement-atr-h1 0.05
     python scripts/etude_traversee.py --m1-dir data/m1 --familles ronds --decalage 16.67   # niveaux non ronds
+    python scripts/etude_traversee.py --m1-dir data/m1 --familles ronds --pas 100 --stop-atr-h1 1 --entree close
 
 Sortie : out/traversee.csv (un trade par ligne) et la synthèse par cible, toutes familles
 puis par famille, avec l'écart au contrôle neutre et l'espérance par année.
@@ -40,14 +41,15 @@ def main() -> None:
     ap.add_argument("--start", type=date.fromisoformat)
     ap.add_argument("--end", type=date.fromisoformat)
     ap.add_argument("--familles", nargs="+", choices=FAMILIES, default=list(FAMILIES))
-    ap.add_argument("--decalage", type=float, default=0.0, help="décalage de la grille de 50 $ (contrôle)")
+    ap.add_argument("--pas", type=float, default=50.0, help="pas des chiffres ronds, en dollars")
+    ap.add_argument("--decalage", type=float, default=0.0, help="décalage de la grille (contrôle)")
     ap.add_argument("--stop-atr-h1", type=float, default=0.5)
     ap.add_argument("--entree", choices=["stop", "close"], default="stop")
     ap.add_argument("--glissement-atr-h1", type=float, default=0.0)
     ap.add_argument("--out", type=Path, default=Path("out"))
     a = ap.parse_args()
 
-    p = CrossParams(families=tuple(a.familles), offset=a.decalage, stop_atr_h1=a.stop_atr_h1,
+    p = CrossParams(families=tuple(a.familles), step=a.pas, offset=a.decalage, stop_atr_h1=a.stop_atr_h1,
                     entry=a.entree, slippage_atr_h1=a.glissement_atr_h1)
     m1 = load_m1_dir(a.m1_dir)
     ev = run_cross(m1, p, a.start, a.end)
